@@ -1,0 +1,20 @@
+{
+  "name": "super_elad_game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.94.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4"
+  }
+}

@@ -1,0 +1,78 @@
+{
+    "info": {
+        "name": "ELAD BEN SHABAT",
+        "role": "BACKEND DEVELOPER",
+        "location": "TEL AVIV, ISRAEL",
+        "email": "eladsnd@gmail.com",
+        "phone": "+972-50-4321478",
+        "linkedin": "linkedin.com/in/elad-ben-shabat-369583168",
+        "github": "github.com/eladsnd"
+    },
+    "summary": "Backend developer with hands-on experience building production services in TypeScript and Java across distributed cloud systems. Skilled in event-driven architectures, service integrations, and observability using GCP Pub/Sub, Redis, Docker, and Datadog. Strong ownership mindset with proven delivery across development, testing, CI/CD, and production debugging.",
+    "experience": [
+        {
+            "company": "Optimove",
+            "role": "Backend Developer",
+            "period": "Apr 2023 – Present",
+            "description": "Built distributed event-driven workflows (GCP Pub/Sub) powering cross-channel campaign execution for +X clients. Designed and implemented monitoring pipelines to Datadog. Owned vendor-integration services. Improved high-traffic performance using Redis caching. Resolved production issues using Datadog + GCP logs. Refactored legacy code."
+        },
+        {
+            "company": "NICE Actimize",
+            "role": "Software Development Intern",
+            "period": "Mar 2022 – Mar 2023",
+            "description": "Developed backend features in Java for microservices; increased performance ~20% using multithreading. Contributed to Kubernetes workflows and automated testing coverage. Worked cross-functionally to support production feature delivery."
+        },
+        {
+            "company": "IDF",
+            "role": "Technology-support role",
+            "period": "2015 – 2018",
+            "description": "Technology-support role during military service."
+        }
+    ],
+    "skills": {
+        "languages": [
+            "TypeScript",
+            "JavaScript",
+            "Java"
+        ],
+        "backend": [
+            "REST APIs",
+            "Redis",
+            "Pub/Sub",
+            "Distributed Services",
+            "Event-driven Flows"
+        ],
+        "infra": [
+            "Docker",
+            "GCP",
+            "Datadog",
+            "GitHub Actions",
+            "Azure DevOps",
+            "Terraform"
+        ],
+        "testing": [
+            "Unit Testing",
+            "Integration Testing"
+        ],
+        "tools": [
+            "Linux / CLI",
+            "JSON",
+            "Git",
+            "Monorepo Workflows"
+        ]
+    },
+    "education": {
+        "degree": "B.Sc. Computer Science",
+        "school": "Tel Aviv University",
+        "period": "2020–2023",
+        "gpa": "83"
+    },
+    "softSkills": [
+        "Ownership & accountability",
+        "Root-cause problem solving",
+        "Analytical thinking",
+        "Fast learner & adaptable",
+        "Team player",
+        "High attention to detail"
+    ]
+}
