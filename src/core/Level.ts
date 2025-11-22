@@ -4,11 +4,15 @@ import { InfoBlock } from '../entities/InfoBlock';
 import { Bug } from '../entities/Bug';
 import cvData from '../data/cv.json';
 
+import { ResourceManager } from './ResourceManager';
+
 export class Level {
     public entities: Entity[] = [];
     public width: number = 0;
+    private resourceManager: ResourceManager;
 
-    constructor() {
+    constructor(resourceManager: ResourceManager) {
+        this.resourceManager = resourceManager;
         this.generate();
     }
 
@@ -50,18 +54,25 @@ export class Level {
         const platform = new Entity(x, y, w, 50);
         platform.isStatic = true;
         platform.color = '#6b8cff';
+        platform.sprite = this.resourceManager.get('ground');
         this.entities.push(platform);
     }
 
     private addToken(x: number, y: number, text: string): void {
-        this.entities.push(new Token(x, y, text));
+        const token = new Token(x, y, text);
+        token.sprite = this.resourceManager.get('token');
+        this.entities.push(token);
     }
 
     private addInfo(x: number, y: number, title: string, content: string): void {
-        this.entities.push(new InfoBlock(x, y, title, content));
+        const info = new InfoBlock(x, y, title, content);
+        info.sprite = this.resourceManager.get('info');
+        this.entities.push(info);
     }
 
     private addBug(x: number, y: number): void {
-        this.entities.push(new Bug(x, y));
+        const bug = new Bug(x, y);
+        bug.sprite = this.resourceManager.get('bug');
+        this.entities.push(bug);
     }
 }

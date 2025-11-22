@@ -19,8 +19,8 @@ export class Game {
     private physics: Physics;
     private renderer: Renderer;
     private entities: Entity[] = [];
-    private player: Player;
-    private level: Level;
+    private player!: Player;
+    private level!: Level;
     private cameraX: number = 0;
     private uiLayer: HTMLElement;
 
@@ -36,7 +36,8 @@ export class Game {
         this.input = new Input();
         this.physics = new Physics();
         this.resourceManager = new ResourceManager(() => {
-            this.start();
+            // This callback runs AFTER all assets are loaded
+            this.initializeGame();
         });
 
         this.resize();
@@ -47,7 +48,7 @@ export class Game {
             this.renderer = new Renderer(this.ctx, this.canvas.width, this.canvas.height);
         });
 
-        // Load assets
+        // Load assets (async)
         this.resourceManager.load({
             player: '/assets/player.png',
             ground: '/assets/ground.png',
@@ -56,9 +57,11 @@ export class Game {
             bug: '/assets/bug.png',
             background: '/assets/background.png'
         });
+    }
 
+    private initializeGame(): void {
         // Init Level
-        this.level = new Level();
+        this.level = new Level(this.resourceManager);
         this.entities = this.level.entities;
 
         // Add some platforms
@@ -73,7 +76,7 @@ export class Game {
         this.player.sprite = this.resourceManager.get('player');
         this.entities.push(this.player);
 
-        // Start immediately
+        // Start the game NOW that assets are loaded
         this.start();
     }
 

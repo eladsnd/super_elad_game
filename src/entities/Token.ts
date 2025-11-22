@@ -8,7 +8,8 @@ export class Token extends Entity {
         super(x, y, 30, 30);
         this.text = text;
         this.color = '#ffd700'; // Gold
-        this.isStatic = true; // Tokens don't fall
+        this.isStatic = true;
+        this.isTrigger = true;
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {

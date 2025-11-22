@@ -43,6 +43,7 @@ export class Physics {
     }
 
     public resolveCollision(dynamicEntity: Entity, staticEntity: Entity): void {
+        if (staticEntity.isTrigger) return;
         if (!this.checkCollision(dynamicEntity, staticEntity)) return;
 
         // Calculate overlap

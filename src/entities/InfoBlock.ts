@@ -11,6 +11,7 @@ export class InfoBlock extends Entity {
         this.content = content;
         this.color = '#00ff00'; // Green
         this.isStatic = true;
+        this.isTrigger = true;
     }
 
     public draw(ctx: CanvasRenderingContext2D): void {

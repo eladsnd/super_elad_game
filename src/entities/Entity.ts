@@ -7,6 +7,7 @@ export class Entity {
     public vy: number = 0;
     public isStatic: boolean = false;
     public isGrounded: boolean = false;
+    public isTrigger: boolean = false;
     public color: string = '#fff';
     public sprite: HTMLImageElement | null = null;
 
@@ -20,7 +21,11 @@ export class Entity {
     public update(dt: number): void { }
 
     public draw(ctx: CanvasRenderingContext2D): void {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        if (this.sprite) {
+            ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
+        } else {
+            ctx.fillStyle = this.color;
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
     }
 }
