@@ -6,6 +6,7 @@ import { Player } from '../entities/Player';
 import { Level } from './Level';
 import { InfoBlock } from '../entities/InfoBlock';
 import { Token } from '../entities/Token';
+import { ResourceManager } from './ResourceManager';
 
 export class Game {
     private canvas: HTMLCanvasElement;
@@ -23,6 +24,10 @@ export class Game {
     private cameraX: number = 0;
     private uiLayer: HTMLElement;
 
+    private score: number = 0;
+    private isPaused: boolean = false;
+    private resourceManager: ResourceManager;
+
     constructor(canvasId: string) {
         this.canvas = document.getElementById(canvasId) as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d')!;
@@ -30,6 +35,9 @@ export class Game {
 
         this.input = new Input();
         this.physics = new Physics();
+        this.resourceManager = new ResourceManager(() => {
+            this.start();
+        });
 
         this.resize();
         this.renderer = new Renderer(this.ctx, this.canvas.width, this.canvas.height);
@@ -39,13 +47,34 @@ export class Game {
             this.renderer = new Renderer(this.ctx, this.canvas.width, this.canvas.height);
         });
 
+        // Load assets
+        this.resourceManager.load({
+            player: '/assets/player.png',
+            ground: '/assets/ground.png',
+            token: '/assets/token.png',
+            info: '/assets/info.png',
+            bug: '/assets/bug.png',
+            background: '/assets/background.png'
+        });
+
         // Init Level
         this.level = new Level();
         this.entities = this.level.entities;
 
-        // Init Player
+        // Add some platforms
+        const ground = new Entity(0, 550, 800, 50);
+        ground.isStatic = true;
+        ground.color = '#6b8cff';
+        ground.sprite = this.resourceManager.get('ground');
+        this.entities.push(ground);
+
+        // Init Player (Add last to render on top)
         this.player = new Player(100, 100, this.input);
+        this.player.sprite = this.resourceManager.get('player');
         this.entities.push(this.player);
+
+        // Start immediately
+        this.start();
     }
 
     private resize(): void {
@@ -62,11 +91,19 @@ export class Game {
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
-        this.accumulator += deltaTime;
+        if (!this.isPaused) {
+            this.accumulator += deltaTime;
 
-        while (this.accumulator >= this.step) {
-            this.update(this.step);
-            this.accumulator -= this.step;
+            while (this.accumulator >= this.step) {
+                this.update(this.step);
+                this.accumulator -= this.step;
+            }
+        } else {
+            // Check for unpause
+            if (this.input.isDown('Escape') || this.input.isDown('Enter')) {
+                this.isPaused = false;
+                this.updateUI(null);
+            }
         }
 
         this.render();
@@ -86,48 +123,66 @@ export class Game {
         this.checkInteractions();
     }
 
+    private lastTriggerTime: number = 0;
+    private readonly triggerCooldown: number = 2000; // 2 seconds
+
     private checkInteractions(): void {
-        let activeInfo: InfoBlock | null = null;
+        const now = performance.now();
 
         for (const entity of this.entities) {
             if (entity === this.player) continue;
 
             if (this.physics.checkCollision(this.player, entity)) {
                 if (entity instanceof Token) {
-                    entity.isCollected = true;
-                    // Play sound?
+                    if (!entity.isCollected) {
+                        entity.isCollected = true;
+                        this.score += 100;
+                        // Play sound?
+                    }
                 } else if (entity instanceof InfoBlock) {
-                    activeInfo = entity;
+                    if (!entity.triggered && (now - this.lastTriggerTime > this.triggerCooldown)) {
+                        this.isPaused = true;
+                        this.updateUI(entity);
+                        this.lastTriggerTime = now;
+                        // Prevent re-triggering immediately if we want
+                        // entity.triggered = true; 
+                    }
                 }
             }
         }
 
-        this.updateUI(activeInfo);
+        // Update UI for Score if not paused by info block
+        if (!this.isPaused) {
+            this.updateUI(null);
+        }
     }
 
     private updateUI(infoBlock: InfoBlock | null): void {
+        let html = `<div style="position: absolute; top: 10px; left: 10px; color: white; font-family: sans-serif; font-size: 20px;">Score: ${this.score}</div>`;
+
         if (infoBlock) {
-            this.uiLayer.innerHTML = `
+            html += `
         <div style="
           position: absolute;
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          background: rgba(0,0,0,0.8);
+          background: rgba(0,0,0,0.9);
           color: white;
           padding: 20px;
           border-radius: 10px;
-          border: 2px solid #fff;
+          border: 2px solid #00ff00;
           max-width: 600px;
-          font-family: sans-serif;
+          font-family: 'Courier New', monospace;
         ">
           <h2 style="margin-top: 0; color: #00ff00;">${infoBlock.title}</h2>
           <p>${infoBlock.content}</p>
+          <div style="margin-top: 20px; font-size: 12px; color: #aaa;">Press ENTER to continue...</div>
         </div>
       `;
-        } else {
-            this.uiLayer.innerHTML = '';
         }
+
+        this.uiLayer.innerHTML = html;
     }
 
     private render(): void {

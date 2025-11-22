@@ -22,6 +22,14 @@ export class Physics {
             } else {
                 entity.isGrounded = false;
             }
+
+            // Check against static entities
+            for (const other of entities) {
+                if (entity === other) continue;
+                if (other.isStatic) {
+                    this.resolveCollision(entity, other);
+                }
+            }
         }
     }
 
@@ -32,5 +40,42 @@ export class Physics {
             a.y < b.y + b.height &&
             a.y + a.height > b.y
         );
+    }
+
+    public resolveCollision(dynamicEntity: Entity, staticEntity: Entity): void {
+        if (!this.checkCollision(dynamicEntity, staticEntity)) return;
+
+        // Calculate overlap
+        const dx = (dynamicEntity.x + dynamicEntity.width / 2) - (staticEntity.x + staticEntity.width / 2);
+        const dy = (dynamicEntity.y + dynamicEntity.height / 2) - (staticEntity.y + staticEntity.height / 2);
+        const width = (dynamicEntity.width + staticEntity.width) / 2;
+        const height = (dynamicEntity.height + staticEntity.height) / 2;
+        const crossWidth = width * dy;
+        const crossHeight = height * dx;
+
+        if (Math.abs(dx) <= width && Math.abs(dy) <= height) {
+            if (crossWidth > crossHeight) {
+                if (crossWidth > -crossHeight) {
+                    // Bottom collision
+                    dynamicEntity.y = staticEntity.y + staticEntity.height;
+                    dynamicEntity.vy = 0;
+                } else {
+                    // Left collision
+                    dynamicEntity.x = staticEntity.x - dynamicEntity.width;
+                    dynamicEntity.vx = 0;
+                }
+            } else {
+                if (crossWidth > -crossHeight) {
+                    // Right collision
+                    dynamicEntity.x = staticEntity.x + staticEntity.width;
+                    dynamicEntity.vx = 0;
+                } else {
+                    // Top collision
+                    dynamicEntity.y = staticEntity.y - dynamicEntity.height;
+                    dynamicEntity.vy = 0;
+                    dynamicEntity.isGrounded = true;
+                }
+            }
+        }
     }
 }

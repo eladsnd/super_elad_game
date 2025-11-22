@@ -25,7 +25,12 @@ export class Renderer {
             if (entity.x + entity.width < cameraX || entity.x > cameraX + this.width) {
                 continue;
             }
-            entity.draw(this.ctx);
+
+            if (entity.sprite) {
+                this.ctx.drawImage(entity.sprite, entity.x, entity.y, entity.width, entity.height);
+            } else {
+                entity.draw(this.ctx);
+            }
         }
 
         this.ctx.restore();

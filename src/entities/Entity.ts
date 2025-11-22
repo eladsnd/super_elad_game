@@ -8,6 +8,7 @@ export class Entity {
     public isStatic: boolean = false;
     public isGrounded: boolean = false;
     public color: string = '#fff';
+    public sprite: HTMLImageElement | null = null;
 
     constructor(x: number, y: number, width: number, height: number) {
         this.x = x;
